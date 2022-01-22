@@ -69,7 +69,7 @@ const inputData = (employeeData) => {
 
     {
       type: 'list',
-      name: 'JobTitle',
+      name: 'Role',
       message: 'Provide a job title for the employee:',
       choices: ['Employee', 'Manager', 'Engineer', 'Intern'],
     },
