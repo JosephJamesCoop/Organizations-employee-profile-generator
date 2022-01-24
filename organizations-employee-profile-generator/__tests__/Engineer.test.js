@@ -1,4 +1,3 @@
-
 const Engineer = require("../lib/Engineer");
 
 describe("All parts of Engineer Object", () => {
@@ -8,7 +7,6 @@ describe("All parts of Engineer Object", () => {
         const worker = new Engineer('Dave', 1001, 'example@email.com', githubValue);
         expect(worker.github).toBe(githubValue);
     });
-
     
     it("Verifies Job Title is attached", () => {
       const titleValue = "Engineer";

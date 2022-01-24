@@ -1,14 +1,13 @@
 const inquirer = require('inquirer');
 
-const inputData = (employeeData) => {
-  console.log(employeeData);
-  if (!employeeData) {
-    employeeData = [];
-  }
+
+
+const inputData = employeeList => {
+  
   return inquirer.prompt([
     {
       type: 'input',
-      name: 'Name',
+      name: 'name',
       message: "What is the Employee's name?",
       validate: nameInput => {
         if (nameInput) {
@@ -21,20 +20,20 @@ const inputData = (employeeData) => {
     },
     {
       type: 'input',
-      name: 'ID',
+      name: 'id',
       message: 'What is the Employees ID?',
       validate: nameInput => {
         if (nameInput) {
           return true;
         } else {
-          console.log('A name is required.');
+          console.log('An ID is required.');
           return false;
         }
       }
     },
     {
       type: 'input',
-      name: 'Email',
+      name: 'email',
       message: 'What is the Employees email?',
       validate: nameInput => {
         if (nameInput) {
@@ -45,35 +44,89 @@ const inputData = (employeeData) => {
         }
       }
     },
-    // {
-    //   type: 'confirm',
-    //   name: 'Employee',
-    //   message: 'Is the Employee a standard Employee?',
-    //   default: true
-    // },
-    //     {
-    //   type: 'confirm',
-    //   name: 'Manager',
-    //   message: 'Is the Employee a Manager?',
-    //   when: confirmEmployee => {
-    //     if (confirmEmployee === false) {
-    //       return true;
-    //     } else {
-    //       console.log('A name is required.');
-    //       return true;
-    //     }
-    //   }
-    // },
-
-
+    {
+      type: 'confirm',
+      name: 'confirmEmployee',
+      message: 'Is this employee a standard Employee?',
+      default: true
+    },
+    {
+      type: 'confirm',
+      name: 'confirmManager',
+      message: 'Is this employee a Manager?',
+      default: false,
+      when: ({ confirmEmployee })  => {
+        if (confirmEmployee) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    },
+    {
+      type: "input",
+      name: "roleInfo",
+      message: "Enter Manager's office number.",
+      when: ({ confirmManager })  => {
+        if (confirmManager) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
 
     {
-      type: 'list',
-      name: 'Role',
-      message: 'Provide a job title for the employee:',
-      choices: ['Employee', 'Manager', 'Engineer', 'Intern'],
+      type: 'confirm',
+      name: 'confirmEngineer',
+      message: 'Is this employee an Engineer?',
+      default: false,
+      when: ({ confirmManager })  => {
+        if (confirmManager) {
+          return false;
+        } else {
+          return true;
+        }
+      }
     },
-    
+    {
+      type: "input",
+      name: "roleInfo",
+      message: "Enter Engineer's github username",
+      when: ({ confirmEngineer })  => {
+        if (confirmEngineer) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
+
+    {
+      type: 'confirm',
+      name: 'confirmIntern',
+      message: 'Is this employee an Intern?',
+      default: false,
+      when: ({ confirmEngineer })  => {
+        if (confirmEngineer) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    },
+    {
+      type: "input",
+      name: "roleInfo",
+      message: "Enter the Interns School",
+      when: ({ confirmIntern })  => {
+        if (confirmIntern) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
     {
       type: 'confirm',
       name: 'confirmAddEmployee',
@@ -82,104 +135,25 @@ const inputData = (employeeData) => {
     }
   ])
     .then(employeeList => {
-      employeeData.push(employeeList);
+       const employeeInfo = employeeList
+       console.log("data 1", employeeData);
+       console.log("info" ,employeeInfo);
+       employeeData.push(employeeInfo);
+       console.log("data 2", employeeData);
+      
       if (employeeList.confirmAddEmployee) {
-        return inputData(employeeData);
+        return inputData();
       } else {
-        return employeeData;
+        console.log("length", employeeData);
+        console.log("list", employeeList);
+        return employeeData
+        // writeFile(employeeList)
       }
+    
     });;
 };
+ 
+inputData().then(employeeData => {
+  return writeFile(employeeData)})
+  .then(info => {return writeCSS(info)});
 
-
-
-    // {
-    //   type: 'confirm',
-    //   name: 'Employee',
-    //   message: 'Is the Employee a standard Employee?',
-    //   default: true
-    // },
-    // {
-    //   validate: ({ confirmEmployee }) => {
-    //     if (confirmEmployee === false) {
-    //       return { type: 'confirm',
-    //   name: 'Manager',
-    //   message: 'Is the Employee a Manager?'}
-    //     } else {
-    //       return false
-    //     }
-    //   }
-    // },
-    // {
-    //   type: 'input',
-    //   name: 'officeNumber',
-    //   message: "What is the Manager's office number?",
-    //   when: ({ confirmManager }) => {
-    //     if (confirmManager) {
-    //       return true;
-    //     } else {
-    //       return false;
-    //     }
-    //   }
-    // },
-    // {
-    //   type: 'confirm',
-    //   name: 'Engineer',
-    //   message: 'Is the Employee an Engineer?',
-    //   validate: ({ confirmManager }) => {
-    //     if (confirmManager === false) {
-    //       return true;
-    //     } else {
-    //       return false
-    //     }
-    //   }
-    // },
-    // {
-    //   type: 'input',
-    //   name: 'github',
-    //   message: "What is the Engineer's GitHub username?",
-    //   when: ({ confirmEngineer }) => {
-    //     if (confirmEngineer) {
-    //       return true;
-    //     } else {
-    //       return false;
-    //     }
-    //   }
-    // },
-    // {
-    //   type: 'confirm',
-    //   name: 'Engineer',
-    //   message: 'Is the Employee an Engineer?',
-    //   validate: ({ confirmEngineer }) => {
-    //     if (confirmEngineer === false) {
-    //       return true;
-    //     } else {
-    //       return false
-    //     }
-    //   }
-    // },
-    // {
-    //   type: 'input',
-    //   name: 'officeNumber',
-    //   message: "What is the school the intern is attending?",
-    //   when: ({ confirmEngineer }) => {
-    //     if (confirmEngineer) {
-    //       return {
-    //         validate: nameInput => {
-    //           if (nameInput) {
-    //             return true;
-    //           } else {
-    //             console.log('A school name is required.');
-    //             return false;
-    //           }
-    //         }
-    //       };
-    //     } else {
-    //       return false;
-    //     }
-    //   }
-    // },
-
-  
-
-inputData([]).then(data => { console.log(data.JobTile) });
